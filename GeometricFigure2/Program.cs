@@ -18,13 +18,12 @@ using System.Threading.Tasks;
 фигуры (введены отрицательные длины сторон или при
 создании объекта треугольника существует пара сторон,
 сумма длин которых меньше длины третьей стороны и т п ) 
-   
 */
 
 
 namespace GeometricFigure2
 {
-
+    // власний Exception
     [Serializable]
     public class NoRightLenghtException : Exception
     {
@@ -37,6 +36,7 @@ namespace GeometricFigure2
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
+    // интерфейс ПростойМногоугольник
     interface ISimplyN_Angle
     {
         double GetHeight();
@@ -51,13 +51,14 @@ namespace GeometricFigure2
         double GetPerimeter();
     }
 
+    // интерфейс Составная фигура
     interface ICompoundFiguresNAngle
     {
         double GetArea();
     }
+    
 
-
-
+    // реализация интерфейса
     class N_Angle : ISimplyN_Angle
     {
         private readonly double height;
@@ -134,18 +135,17 @@ namespace GeometricFigure2
                    $"площадь: {GetArea()} cм2\n" +
                    $"периметр: {GetPerimeter()} cм\n";
         }
-
-
-
-
     }
 
+
+    // абстактный клас Фигура
     abstract class Figure
     {
         public abstract double Perimetr();
         public abstract double Area();
 
     }
+
 
     class Rectangle : Figure
     {
@@ -158,8 +158,8 @@ namespace GeometricFigure2
                 this.a = a;
                 this.b = b;
 
-                if (a < 0 || b < 0) { throw new NoRightLenghtException($"Введена отрицательная длина одной из сторон объекта {this.GetType().Name.ToString()} !"); }
-                else if (a == 0 || b == 0) { throw new NoRightLenghtException($"Введена нулевая длина одной из сторон объекта {this.GetType().Name.ToString()} !"); }
+                if (a < 0 || b < 0) { throw new NoRightLenghtException($"ОШИБКА: Введена отрицательная длина одной из сторон объекта прямоугольника!"); }
+                else if (a == 0 || b == 0) { throw new NoRightLenghtException($"ОШИБКА: Введена нулевая длина одной из сторон объекта прямоугольника!"); }
             }
             catch (Exception e)
             {
@@ -180,7 +180,7 @@ namespace GeometricFigure2
 
         public override string ToString()
         {
-            return $" Rectangle: a={a}cm, b={b}cm\n Perimetr rectangle:{Perimetr()}cm\n Area rectangle:{Area()}cm2\n";
+            return $" Прямоугольник: a={a}cm, b={b}cм\n Периметр:{Perimetr()}cm\n Площадь:{Area()}cм2\n";
         }
     }
     class Ellipse : Figure
@@ -189,11 +189,21 @@ namespace GeometricFigure2
 
         public Ellipse(double a, double b)
         {
-            this.a = a;
-            this.b = b;
+            try
+            {
+                this.a = a;
+                this.b = b;
+
+                if (a < 0 || b < 0) { throw new NoRightLenghtException($"ОШИБКА:  Введена отрицательная длина одной из полуосей объекта эллипса !"); }
+                else if (a == 0 || b == 0) { throw new NoRightLenghtException($"ОШИБКА:  Введена нулевая длина одной из полуосей объекта эллипса !"); }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{ e.Message}");
+
+            }
 
         }
-
         public override double Area()
         {
             return Math.Round(Math.PI * a * b, 2);
@@ -206,7 +216,7 @@ namespace GeometricFigure2
 
         public override string ToString()
         {
-            return $" Ellipse: small semiosphere ellipse a={a}cm, large semiosphere ellipse b={b}cm \n Lenght ellipse:{Perimetr()}cm\n Area ellipse:{Area()}cm2\n";
+            return $" Елипс: малая полуось эллипса a={a}cм, большая полуось эллипса b={b}cm \n Длина окружности:{Perimetr()}cm\n Площадь:{Area()}cм2\n";
         }
     }
     class Parallelogram : Figure
@@ -215,9 +225,23 @@ namespace GeometricFigure2
 
         public Parallelogram(double a, double b, double h)
         {
-            this.a = a;
-            this.b = b;
-            this.h = h;
+
+            try
+            {
+                this.a = a;
+                this.b = b;
+                this.h = h;
+                if (a < 0 || b < 0 ) { throw new NoRightLenghtException($"ОШИБКА: Введена отрицательная длина одной из сторон объекта параллелограма !"); }
+                else if (a == 0 || b == 0) { throw new NoRightLenghtException($"ОШИБКА: Введена нулевая длина одной из сторон объекта параллелограма !"); }
+                else if (h == 0) { throw new NoRightLenghtException($"ОШИБКА: Введена нулевая длина высоты объекта параллелограма !"); }
+                else if (h < 0) { throw new NoRightLenghtException($"ОШИБКА: Введена отрицательная длина высоты объекта параллелограма !"); }
+            }
+
+            catch (Exception e)
+            {
+                Console.WriteLine($"{ e.Message}");
+
+            }
         }
 
         public override double Area()
@@ -232,7 +256,7 @@ namespace GeometricFigure2
 
         public override string ToString()
         {
-            return $" Parallelogram: a={a}cm, b={b}cm, h={h}cm\n Perimetr parallelogram:{Perimetr()}cm\n Area parallelogram:{Area()}cm2\n";
+            return $" Паралелограм: a={a}cм, b={b}cм, h={h}cм\n Периметр:{Perimetr()}cм\n Площадь:{Area()}cм2\n";
         }
     }
 
@@ -242,8 +266,18 @@ namespace GeometricFigure2
 
         public Rhomb(double a, double h)
         {
-            this.a = a;
-            this.h = h;
+            try
+            {
+                this.a = a;
+                this.h = h;
+
+                if (a < 0 || h < 0) { throw new NoRightLenghtException($"ОШИБКА: Введена отрицательная длина стороны или высоты объекта ромба !"); }
+                else if (a == 0 || h == 0) { throw new NoRightLenghtException($"ОШИБКА: Введена нулевая длина стороны или высоты объекта ромба  !"); }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{ e.Message}");
+            }
         }
 
         public override double Area()
@@ -258,7 +292,7 @@ namespace GeometricFigure2
 
         public override string ToString()
         {
-            return $" Rhomb: a={a}cm, h={h}cm\n Perimetr rhomb:{Perimetr()}cm\n Area rhomb:{Area()}cm2\n";
+            return $" Ромб: a={a}cм, h={h}cм\n Периметр:{Perimetr()}cм\n Площадь:{Area()}cм2\n";
         }
     }
 
@@ -268,7 +302,20 @@ namespace GeometricFigure2
 
         public Square(double a)
         {
-            this.a = a;
+           
+            try
+            {
+                this.a = a;
+                if (a < 0 ) { throw new NoRightLenghtException($"ОШИБКА: Введена отрицательная длина стороны объекта квадрата !"); }
+                else if (a == 0 ) { throw new NoRightLenghtException($"ОШИБКА: Введена нулевая длина стороны  объекта квадрата !"); }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{ e.Message}");
+            }
+
+
+
         }
 
         public override double Area()
@@ -283,7 +330,7 @@ namespace GeometricFigure2
 
         public override string ToString()
         {
-            return $" Square: a={a}cm\n Perimetr square:{Perimetr()}cm\n Area square:{Area()}cm2\n";
+            return $" Квадарат: a={a}cm\n Периметр:{Perimetr()}cм\n площадь:{Area()}cм2\n";
         }
     }
 
@@ -293,9 +340,27 @@ namespace GeometricFigure2
 
         public Trapeze(double a, double b, double h)
         {
-            this.a = a;
-            this.b = b;
-            this.h = h;
+            try
+            {
+                this.a = a;
+                this.b = b;
+                this.h = h;
+                if (a < 0 || b < 0) { throw new NoRightLenghtException($"ОШИБКА: Введена отрицательная длина одной из сторон объекта трапеции !"); }
+                else if (a == 0 || b == 0) { throw new NoRightLenghtException($"ОШИБКА: Введена нулевая длина одной из сторон объекта трапеции !"); }
+                else if (h == 0) { throw new NoRightLenghtException($"ОШИБКА: Введена нулевая длина высоты объекта трапеции!"); }
+                else if (h < 0) { throw new NoRightLenghtException($"ОШИБКА: Введена отрицательная длина высоты объекта трапеции !"); }
+            }
+
+            catch (Exception e)
+            {
+                Console.WriteLine($"{ e.Message}");
+
+            }
+
+
+
+
+
         }
 
         public override double Area()
@@ -310,19 +375,29 @@ namespace GeometricFigure2
 
         public override string ToString()
         {
-            return $" Trapeze: a={a}cm, b={b}cm, h={h}cm\n Perimetr trapeze:{Perimetr()}cm\n Area trapeze:{Area()}cm2\n";
+            return $" Трапеция: a={a}cм, b={b}cм, h={h}cм\n Периметр:{Perimetr()}cм\n Площадь:{Area()}cм2\n";
         }
     }
-
     class Triangle : Figure
     {
         private double a, b, c;
 
         public Triangle(double a, double b, double c)
         {
-            this.a = a;
-            this.b = b;
-            this.c = c;
+            
+            try
+            {
+                this.a = a;
+                this.b = b;
+                this.c = c;
+                if (a < 0 || b < 0 || c < 0) { throw new NoRightLenghtException($"ОШИБКА: Введена отрицательная длина одной из сторон объекта треугольника!"); }
+                else if (a == 0 || b == 0 || c == 0) { throw new NoRightLenghtException($"ОШИБКА: Введена нулевая длина одной из сторон объекта треугольника !"); }
+                else if ((a+b) <= c  || (c + b) <= a || (a + c) <= b) { throw new NoRightLenghtException($"ОШИБКА: Сумма двух сторон треугольника меньше третьей!"); }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{ e.Message}");
+            }
         }
 
         public override double Area()
@@ -330,7 +405,6 @@ namespace GeometricFigure2
             double p = (a + b + c) / 2;
             return Math.Round(Math.Sqrt(p * (p - a) * (p - b) * (p - c)), 2);
         }
-
         public override double Perimetr()
         {
             return a + b + c;
@@ -338,7 +412,7 @@ namespace GeometricFigure2
 
         public override string ToString()
         {
-            return $" Triangle: a={a}cm, b={b}cm, c={c}cm\n Perimetr triangle:{Perimetr()}cm\n Area triangle:{Area()}cm2\n";
+            return $" Треугольник: a={a}cм, b={b}cм, c={c}cм\n Периметр:{Perimetr()}cм\n Площадь:{Area()}cм2\n";
         }
     }
 
@@ -364,7 +438,7 @@ namespace GeometricFigure2
 
         public override string ToString()
         {
-            return $" Сircle: radius r={r}cm\n Lenght circle:{Perimetr()}cm\n Area circle:{Area()}cm2\n";
+            return $"Круг: радиус r={r}cм\n Длина круга:{Perimetr()}cм\nПлощадь:{Area()}cм2\n";
         }
     }
 
@@ -390,15 +464,13 @@ namespace GeometricFigure2
             return Sum;
 
         }
-        
-
+  
         public override string ToString()
         {
             return $"Количество многоугольников: {this.Count()} штук\n" +
                    $"Площадь всех многоугольников: {GetArea()} cм2 \n";
         }
 
-        
     }
 
     class Program
@@ -406,19 +478,19 @@ namespace GeometricFigure2
         static void Main(string[] args)
         {
             
-            List<Figure> Figures = new List<Figure> { new Triangle(10, 15, 20),    //трикутник
+            List<Figure> Figures = new List<Figure> { new Triangle(10, 10, 20),    //трикутник
                                                       new Square(5),               //квадрат
-                                                      new Rectangle(3, 12),        //прямокутник
+                                                      new Rectangle(0, 12),        //прямокутник
                                                       new Rhomb(10, 5),            //ромб
                                                       new Parallelogram(10, 5, 4), //паралелограм
                                                       new Trapeze(10, 5, 4),       //трапеція
                                                       new Сircle(17),              //круг
                                                       new Ellipse(10,7)};          //еліпс
-
             foreach (var figure in Figures)
             {
                 Console.WriteLine(figure);
             }
+            Console.WriteLine("Нажмите Enter для продолжения!");
             Console.ReadLine();
   
             ICompoundFiguresNAngle CFigures = new CompoundFigures(new ISimplyN_Angle[] {new N_Angle(10, 5),
